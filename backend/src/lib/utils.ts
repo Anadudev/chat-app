@@ -27,3 +27,14 @@ export const generateJWTToken = (userId: string, res:Response) => {
 		maxAge: 30 * 24 * 60 * 60 * 1000,
 	});
 };
+
+/**
+ * Validate an email address.
+ *
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} True if the email address is valid, false otherwise.
+ */
+export const validateEmail = (email: string) => {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return emailRegex.test(email);
+}
