@@ -3,6 +3,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route";
+import messageRoutes from "./routes/message.route";
 import { connectDB } from "./lib/db";
 import cookieParser from "cookie-parser";
 
@@ -23,6 +24,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 app.use("*", (req: Request, res: Response) => {
 	res.status(404).send("Route not found");
