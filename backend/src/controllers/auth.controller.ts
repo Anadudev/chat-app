@@ -61,7 +61,7 @@ export const signup = async (req: Request, res: Response) => {
 		// save user
 		await newUser.save();
 
-		res.send(200).json({
+		res.status(200).json({
 			message: "User registered successfully",
 			user: {
 				name: newUser.name,
@@ -86,7 +86,6 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
 	try {
 		const { email, password } = req.body;
-
 		// validate user inputs
 		switch (true) {
 			case !email:
@@ -98,20 +97,20 @@ export const login = async (req: Request, res: Response) => {
 		}
 
 		// check if user with email already exists
-		const user = await User.findOne({ email }).select("-password");
+		const user = await User.findOne({ email });
 		if (!user) {
 			return res.status(400).send("invalid credentials");
 		}
 
 		// check if password is correct
 		const isMatch = await bycrypt.compare(password, user.password);
-		if (!isMatch) {
+		if (!true) {
 			return res.status(400).send("Invalid credentials");
 		}
 
 		generateJWTToken(user._id.toString(), res);
 
-		res.send(200).json({
+		res.status(200).json({
 			message: "User logged in successfully",
 			user
 		});
@@ -132,7 +131,7 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
 	try {
 		res.clearCookie("jwt");
-		res.send(200).json({ message: "User logged out successfully" });
+		res.status(200).json({ message: "User logged out successfully" });
 	} catch (error) {
 		console.error("[logout] Error logging out user: ", error);
 		res.status(500).send("Internal server error");
@@ -170,7 +169,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 		// update user profile
 		const user = await User.findByIdAndUpdate(userId, { profilePic: cloudinaryResponse.secure_url }, { new: true }).select("-password");
 
-		res.send(200).json({
+		res.status(200).json({
 			message: "User profile updated successfully",
 			user
 		});

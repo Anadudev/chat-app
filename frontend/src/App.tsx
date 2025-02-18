@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "./components/navbar";
 // pages import
 import SignUpPage from "./pages/signUpPage";
@@ -10,13 +10,14 @@ import SettingsPage from "./pages/settingsPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { authUser, checkAuth, authLoading } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, []);
-  console.log(authUser);
+
   if (authLoading && !authUser)
     return (
       <div className="flex items-center justify-center h-screen">
@@ -46,6 +47,7 @@ function App() {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
       </Routes>
+      <Toaster/>
     </div>
   );
 }

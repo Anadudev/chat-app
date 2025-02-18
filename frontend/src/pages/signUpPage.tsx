@@ -25,16 +25,26 @@ const SignUpPage = () => {
 
   const validateForm = () => {
     const { name, email, password } = formData;
-    if (!name || !email || !password) {
-      return false;
+    switch (true) {
+      case !name || !name.trim():
+        toast.error("Name is required");
+        return false;
+      case !email || !email.trim():
+        toast.error("Email is required");
+        return false;
+      case password.length < 6:
+        toast.error("Password must be greater than 6 characters");
+        return false;
+      default:
+        return true;
     }
-    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      if (validateForm()) {
+      const success = validateForm();
+      if (success) {
         await signup(formData);
       }
     } catch (error) {
@@ -71,6 +81,7 @@ const SignUpPage = () => {
                   <User className="size-5 text-base-content/40" />
                 </div>
                 <input
+                  required
                   type="text"
                   name="name"
                   id=""
@@ -93,6 +104,7 @@ const SignUpPage = () => {
                   <Mail className="size-5 text-base-content/40" />
                 </div>
                 <input
+                  required
                   type="email"
                   name="email"
                   id=""
@@ -115,12 +127,13 @@ const SignUpPage = () => {
                   <Lock className="size-5 text-base-content/40" />
                 </div>
                 <input
+                  required
                   type={showPassword ? "text" : "password"}
                   name="password"
                   id=""
                   className="input input-bordered w-full pl-10"
                   placeholder="********"
-                  value={formData.name}
+                  value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
