@@ -6,7 +6,9 @@ import authRoutes from "./routes/auth.route";
 import messageRoutes from "./routes/message.route";
 import { connectDB } from "./lib/db";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
+// Load environment variables from .env file
 dotenv.config();
 
 const app: Express = express();
@@ -18,6 +20,15 @@ app.use(express.json());
 // Enable cookie parsing
 // We will use this to store the JWT token in the cookie
 app.use(cookieParser());
+
+// Enable CORS
+app.use(cors({
+	origin: "http://localhost:5173",
+	credentials: true
+}));
+
+// Define a route for the root path
+
 
 app.get("/", (req: Request, res: Response) => {
 	res.send("Express + Typescript Server");
