@@ -11,12 +11,15 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
+import { useThemeStore } from "./store/useThemeStore";
 
 function App() {
   const { authUser, checkAuth, authLoading } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, []);
+
+  const { theme } = useThemeStore();
 
   if (authLoading && !authUser)
     return (
@@ -26,7 +29,7 @@ function App() {
     );
 
   return (
-    <div className="">
+    <div className="" data-theme={theme}>
       <Navbar />
       <Routes>
         <Route
