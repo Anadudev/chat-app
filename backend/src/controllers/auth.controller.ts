@@ -163,6 +163,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 		//  upload users profile picture to cloudinary
 		const cloudinaryResponse = await cloudinary.uploader.upload(profilePic);
 		if (!cloudinaryResponse) {
+			console.error("[updateProfile] Error uploading profile picture: ", cloudinaryResponse);
 			return res.status(400).send("Error uploading profile picture");
 		}
 

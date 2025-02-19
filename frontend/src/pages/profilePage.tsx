@@ -13,7 +13,6 @@ const ProfilePage = () => {
    *
    * @param {React.ChangeEvent<HTMLInputElement>} e - The change event triggered by file input.
    */
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -24,8 +23,6 @@ const ProfilePage = () => {
       reader.onload = async () => {
         const base64Image = reader.result;
         setSelectedImage(base64Image as string);
-        console.log(base64Image);
-        return;
         await updateProfile({ profilePic: base64Image });
       };
     }

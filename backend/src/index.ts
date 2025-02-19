@@ -7,6 +7,7 @@ import messageRoutes from "./routes/message.route";
 import { connectDB } from "./lib/db";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,6 +17,13 @@ const PORT = process.env.PORT || 5001;
 
 // Parse incoming requests with JSON payloads
 app.use(express.json());
+
+
+// Increase the limit to 50mb (adjust as needed)
+// to handle PayloadTooLargeError: request entity too large
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 // Enable cookie parsing
 // We will use this to store the JWT token in the cookie
