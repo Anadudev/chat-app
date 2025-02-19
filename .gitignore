@@ -3,3 +3,4 @@
 .env
 docker-compose.yml
 backend/src/data
+data/

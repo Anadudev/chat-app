@@ -28,3 +28,12 @@ export interface AuthStoreType {
 	signUp: (data: SignUpDataType) => void,
 	login: (data: LoginDataType) => void,
 }
+
+export interface MessageType {
+	_id: string,
+	senderId: string,
+	text: string,
+	image: string,
+	createdAt?: string,
+	updatedAt?: string
+}

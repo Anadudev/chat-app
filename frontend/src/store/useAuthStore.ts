@@ -10,6 +10,7 @@ export const useAuthStore = create((set) => ({
 	loginLoading: false,
 	updateProfileLoading: false,
 	checkAuthLoading: false,
+	onlineUsers: [],
 
 	checkAuth: async () => {
 		try {
@@ -33,7 +34,7 @@ export const useAuthStore = create((set) => ({
 			toast.success('Account created successfully')
 		} catch (error) {
 			console.error("[signup] Error signing up user: ", error);
-			toast.error('Error signing user')
+			toast.error(error.response.data)
 		} finally {
 			set({ singUpLoading: false });
 		}
@@ -46,7 +47,7 @@ export const useAuthStore = create((set) => ({
 			toast.success('User logged out successfully')
 		} catch (error) {
 			console.error("[LogOut] Error logging out user: ", error);
-			toast.error('Error logging out user')
+			toast.error(error.response.data)
 		}
 	},
 
@@ -60,7 +61,7 @@ export const useAuthStore = create((set) => ({
 			toast.success('User logged in successfully')
 		} catch (error) {
 			console.error("[login] Error logging in user: ", error);
-			toast.error('Error logging in user')
+			toast.error(error.response.data)
 		} finally {
 			set({ loginLoading: false });
 		}
@@ -73,7 +74,7 @@ export const useAuthStore = create((set) => ({
 			toast.success('Profile updated successfully')
 		} catch (error) {
 			console.error("[updateProfile] Error updating profile: ", error);
-			toast.error('Error updating profile')
+			toast.error(error.response.data)
 		} finally {
 			set({ updateProfileLoading: false });
 		}

@@ -23,7 +23,8 @@ app.use(express.json());
 // to handle PayloadTooLargeError: request entity too large
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
+// Parse incoming requests with JSON payloads
+app.use(express.json({ limit: '50mb' }));
 
 // Enable cookie parsing
 // We will use this to store the JWT token in the cookie
@@ -43,7 +44,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use("*", (req: Request, res: Response) => {
 	res.status(404).send("Route not found");
