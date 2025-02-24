@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
-import { UserType } from "../types/types";
+import { MessageType, UserType } from "../types/types";
+import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create((set, get) => ({
 	messages: [],
@@ -21,6 +22,7 @@ export const useChatStore = create((set, get) => ({
 			set({ usersLoading: false });
 		}
 	},
+
 	getMessages: async (userId: string) => {
 		set({ messagesLoading: true });
 
@@ -37,18 +39,44 @@ export const useChatStore = create((set, get) => ({
 			});
 		}
 	},
+
 	sendMessage: async (messageData: { text: string; image: string }) => {
-		const { selectedUser, messages } = get();
 		try {
+			const { selectedUser, messages } = get();
 			const response = await axiosInstance.post(`/messages/send/${selectedUser._id}`, {
 				...messageData
 			});
-			set({ messages: [...messages, response.data.message] });
+			console.log(response);
+			// debugging ----------------
+			set({ 'messages': [...messages, response.data.message] });
 		} catch (error) {
 			console.error("[sendMessage] Error sending message: ", error);
 			toast.error(error.response.data|| 'Error sending message');
 		}
 	},
+
+	/**
+	 * Subscribe to new messages event.
+	 * When a new message is received from the server, add it to the messages state.
+	 * This is used to keep the chat updated in real-time.
+	 */
+	subscribeToMessages: () => {
+			const { selectedUser } = get();
+			if (selectedUser) {
+				const socket = useAuthStore.getState().socket;
+				socket.on("newMessage", (message: MessageType) => {
+					set({ messages: [...get().messages, message] });
+				});
+			}
+	},
+	unsubscribeFromMessages: () => {
+		const socket = useAuthStore.getState().socket;
+		socket.off("newMessage");
+	},
+	/**
+	 * Sets the selected user in the chat store.
+	 * @param selectedUser The user to select
+	 */
 	setSelectedUser: (selectedUser: UserType) => {
 		set({ selectedUser });
 	},

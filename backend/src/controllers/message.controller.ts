@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import Message from "../models/message.model";
 import cloudinary from "../lib/cloudinary";
-
+import { getReceiverSocketId } from "../lib/socket";
+import { io } from "../lib/socket";
 /**
  * Retrieves a list of users for the sidebar, excluding the logged-in user.
  *
@@ -77,10 +78,9 @@ export const sendMessage = async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const senderId = (req as any).user._id;
 
-
 		let imageUrl = "";
 
-		if (image){
+		if (image) {
 			const cloudinaryResponse = await cloudinary.uploader.upload(image);
 			if (!cloudinaryResponse) {
 				return res.set(400).send("Error uploading profile picture");
@@ -95,10 +95,14 @@ export const sendMessage = async (req: Request, res: Response) => {
 			image: imageUrl
 		});
 
-
 		await message.save();
 
-		// todo: realtime functionality goes here using socket.io
+
+		const receiverSocketId = getReceiverSocketId(id);
+		if (receiverSocketId) {
+			io.to(receiverSocketId).emit("newMessage", message);
+		}
+
 		res.set(200).json({
 			message
 		})

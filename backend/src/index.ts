@@ -8,11 +8,11 @@ import { connectDB } from "./lib/db";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
-
+import { app, server } from "./lib/socket";
 // Load environment variables from .env file
 dotenv.config();
 
-const app: Express = express();
+// const app: Express = express();
 const PORT = process.env.PORT || 5001;
 
 // Parse incoming requests with JSON payloads
@@ -50,7 +50,7 @@ app.use("*", (req: Request, res: Response) => {
 	res.status(404).send("Route not found");
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log(`[server] Server is running at http://localhost:${PORT}`);
 	// Connect to MongoDB database
 	connectDB();

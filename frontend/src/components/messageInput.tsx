@@ -37,6 +37,7 @@ const MessageInput = () => {
       await sendMessage({ text: text.trim(), image: imagePreview });
 
       // Reset the form
+      console.log("Resetting form");
       setText("");
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";

@@ -130,7 +130,6 @@ const SignUpPage = () => {
                   required
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  id=""
                   className="input input-bordered w-full pl-10"
                   placeholder="********"
                   value={formData.password}

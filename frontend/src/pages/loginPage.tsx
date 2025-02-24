@@ -72,7 +72,6 @@ const LoginPage = () => {
                   required
                   type="email"
                   name="email"
-                  id=""
                   className="input input-bordered w-full pl-10"
                   placeholder="Tt5Hr@example.com"
                   value={formData.email}
