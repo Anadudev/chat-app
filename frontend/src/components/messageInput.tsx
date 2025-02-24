@@ -2,11 +2,13 @@ import React, { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
+import EmojiInput from "./emojiInput";
 
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { sendMessage } = useChatStore();
+  const [openEmoji, setOpenEmoji] = useState(false);
 
   const selectImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,11 +75,13 @@ const MessageInput = () => {
         onSubmit={handleSendMessage}
         className="flex items-center gap-2"
       >
+          <EmojiInput text={text} setText={setText} openEmoji={openEmoji} setOpenEmoji={setOpenEmoji} />
         <div className="flex-1 flex gap-2">
           <input
             type="text"
             name=""
             id=""
+            onFocus={() => setOpenEmoji(false)}
             placeholder="Type a message"
             className="w-full input-bordered rounded-lg input-sm sm:input-md"
             value={text}
@@ -107,6 +111,7 @@ const MessageInput = () => {
         <button
           type="submit"
           className="btn btn-sm btn-circle"
+          onClick={() => setOpenEmoji(false)}
           disabled={!text.trim() && !imagePreview}
         >
           <Send size={20} />
