@@ -51,7 +51,7 @@ export const useChatStore = create((set, get) => ({
 			set({ 'messages': [...messages, response.data.message] });
 		} catch (error) {
 			console.error("[sendMessage] Error sending message: ", error);
-			toast.error(error.response.data|| 'Error sending message');
+			toast.error(error.response.data || 'Error sending message');
 		}
 	},
 
@@ -61,18 +61,20 @@ export const useChatStore = create((set, get) => ({
 	 * This is used to keep the chat updated in real-time.
 	 */
 	subscribeToMessages: () => {
-			const { selectedUser } = get();
-			if (selectedUser) {
-				const socket = useAuthStore.getState().socket;
-				socket.on("newMessage", (message: MessageType) => {
-					set({ messages: [...get().messages, message] });
-				});
-			}
+		const { selectedUser } = get();
+		if (selectedUser) {
+			const socket = useAuthStore.getState().socket;
+			socket.on("newMessage", (message: MessageType) => {
+				if (message.senderId !== selectedUser._id) return;
+				set({ messages: [...get().messages, message] });
+			});
+		}
 	},
 	unsubscribeFromMessages: () => {
 		const socket = useAuthStore.getState().socket;
 		socket.off("newMessage");
 	},
+
 	/**
 	 * Sets the selected user in the chat store.
 	 * @param selectedUser The user to select
