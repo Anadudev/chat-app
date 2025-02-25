@@ -12,13 +12,13 @@ import { app, server } from "./lib/socket";
 
 import path from "path";
 
+const __dirname = path.resolve();
+
 // Load environment variables from .env file
 dotenv.config();
 
 // const app: Express = express();
 const PORT = process.env.PORT || 5001;
-
-const resolvedPath = path.resolve();
 
 // Parse incoming requests with JSON payloads
 app.use(express.json());
@@ -51,19 +51,18 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-app.use("*", (req: Request, res: Response) => {
-	res.status(404).send("Route not found");
-});
+// app.use("*", (req: Request, res: Response) => {
+// 	res.status(404).send("Route not found");
+// });
 
 if (process.env.NODE_ENV === "production") {
 	// Serve the built frontend files
-	app.use(express.static(path.join(resolvedPath, "../frontend/dist")));
+	app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 	// Serve the frontend index.html file for all routes
 	app.get("*", (req: Request, res: Response) => {
-		res.sendFile(path.join(resolvedPath, "../frontend", "dist", "index.html"));
-	}
-	);
+		res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+	});
 }
 
 server.listen(PORT, () => {
