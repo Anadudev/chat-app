@@ -14,7 +14,7 @@ import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "./store/useThemeStore";
 
 function App() {
-  const { authUser, checkAuth, authLoading, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, loginLoading } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -22,7 +22,7 @@ function App() {
 
   const { theme } = useThemeStore();
 
-  if (authLoading && !authUser)
+  if (loginLoading && !authUser)
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader className="size-10 animate-spin" />

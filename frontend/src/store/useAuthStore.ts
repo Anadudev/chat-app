@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
 			query: { userId: authUser._id },
 		});
 		socket.connect();
-		set({ socket: socket }) ; 
+		set({ socket: socket });
 
 		socket.on("getOnlineUsers", (userIds: string[]) => {
 			set({ onlineUsers: userIds });
@@ -97,7 +97,7 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
 		set({ socket: null });
 	},
 
-	updateProfile: async (data: { profilePic: string }) => {
+	updateProfile: async (data: { profilePic: string | ArrayBuffer | null }) => {
 		set({ updateProfileLoading: true });
 		try {
 			const response = await axiosInstance.put("/auth/update-profile", data);

@@ -47,7 +47,7 @@ export interface AuthStoreState {
 	signup: (data: SignUpDataType) => void;
 	logout: () => void;
 	login: (data: LoginDataType) => void;
-	updateProfile: (data: { profilePic: string }) => void;
+	updateProfile: (data: { profilePic: string | ArrayBuffer | null }) => Promise<void>;
 	connectSocket: () => void;
 	disconnectSocket: () => void;
 }

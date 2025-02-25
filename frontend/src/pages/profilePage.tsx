@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
 
 const ProfilePage = () => {
   const { authUser, updateProfileLoading, updateProfile } = useAuthStore();
-  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   /**
    * Handles the upload of a profile picture by converting

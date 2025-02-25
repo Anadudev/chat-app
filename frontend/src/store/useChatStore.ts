@@ -83,7 +83,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
 	 * Sets the selected user in the chat store.
 	 * @param selectedUser The user to select
 	 */
-	setSelectedUser: (selectedUser: UserType) => {
+	setSelectedUser: (selectedUser: UserType | null) => {
 		set({ selectedUser });
 	},
 }));
