@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import SidebarSkeleton from "./skeletons/sidebarSkeleton";
 import { Users } from "lucide-react";
@@ -13,6 +13,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredUsers = showOnlineOnly
@@ -33,7 +34,7 @@ const Sidebar = () => {
 
         {/* Todo: Search bar */}
         {/* todo: orderby recent chats */}
-        {/* todo: online filter toggle */}
+
         <div className="mt-3 hidden md:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -71,10 +72,7 @@ const Sidebar = () => {
                   className="size-12 object-cover rounded-full"
                 />
                 {onlineUsers.includes(user._id) && (
-                  <span
-                    className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  rounded-full ring-2 ring-zinc-900"
-                  />
+                  <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
                 )}
               </div>
 

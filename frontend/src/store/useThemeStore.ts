@@ -1,7 +1,7 @@
 import { create } from "zustand";
+import { ThemeStoreState } from "../types/types";
 
-
-export const useThemeStore = create((set) => ({
+export const useThemeStore = create<ThemeStoreState>((set) => ({
 	theme: localStorage.getItem("chat-theme") || "light",
 	/**
 	 * Sets the theme for the chat application and stores it in local storage.

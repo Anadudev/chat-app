@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
-import { MessageType, UserType } from "../types/types";
+import { MessageType, UserType, ChatStoreState, MessageInputType } from "../types/types";
 import { useAuthStore } from "./useAuthStore";
 
-export const useChatStore = create((set, get) => ({
+
+export const useChatStore = create<ChatStoreState>((set, get) => ({
 	messages: [],
 	users: [],
 	selectedUser: null,
@@ -17,6 +18,7 @@ export const useChatStore = create((set, get) => ({
 			set({ users: response.data.users });
 		} catch (error) {
 			console.error("[getUsers] Error getting users: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data);
 		} finally {
 			set({ usersLoading: false });
@@ -31,6 +33,7 @@ export const useChatStore = create((set, get) => ({
 			set({ messages: response.data.messages });
 		} catch (error) {
 			console.error("[getMessages] Error getting messages: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data);
 		} finally {
 			set({
@@ -40,10 +43,10 @@ export const useChatStore = create((set, get) => ({
 		}
 	},
 
-	sendMessage: async (messageData: { text: string; image: string }) => {
+	sendMessage: async (messageData: MessageInputType) => {
 		try {
 			const { selectedUser, messages } = get();
-			const response = await axiosInstance.post(`/messages/send/${selectedUser._id}`, {
+			const response = await axiosInstance.post(`/messages/send/${selectedUser?._id}`, {
 				...messageData
 			});
 			console.log(response);
@@ -51,6 +54,7 @@ export const useChatStore = create((set, get) => ({
 			set({ 'messages': [...messages, response.data.message] });
 		} catch (error) {
 			console.error("[sendMessage] Error sending message: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data || 'Error sending message');
 		}
 	},

@@ -1,4 +1,3 @@
-import React from "react";
 import { useThemeStore } from "../store/useThemeStore";
 import { THEMES } from "../constants";
 import { Send } from "lucide-react";
@@ -15,7 +14,7 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
-  const {authUser} = useAuthStore();
+  const { authUser } = useAuthStore();
   return (
     <div className="h-screen container mx-auto px-4 pt-20 max-w-5xl">
       <div className="space-y-6">
@@ -66,7 +65,9 @@ const SettingsPage = () => {
                       {authUser?.name?.charAt(0) || "J"}
                     </div>
                     <div>
-                      <h3 className="font-medium text-sm">{authUser?.name || "John Doe"}</h3>
+                      <h3 className="font-medium text-sm">
+                        {authUser?.name || "John Doe"}
+                      </h3>
                       <p className="text-xs text-base-content/70">Online</p>
                     </div>
                   </div>

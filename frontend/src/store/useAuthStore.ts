@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
-import { LoginDataType, SignUpDataType } from "../types/types";
+import { LoginDataType, SignUpDataType, AuthStoreState } from "../types/types";
 import io from "socket.io-client";
 
 const BASE_URL = "http://localhost:50001";
 
-export const useAuthStore = create((set, get) => ({
+export const useAuthStore = create<AuthStoreState>((set, get) => ({
 	authUser: null,
 	singUpLoading: false,
 	loginLoading: false,
@@ -39,7 +39,8 @@ export const useAuthStore = create((set, get) => ({
 			get().connectSocket();
 		} catch (error) {
 			console.error("[signup] Error signing up user: ", error);
-			toast.error(error.response.data)
+			// @ts-expect-error error type
+			toast.error(error?.response?.data)
 		} finally {
 			set({ singUpLoading: false });
 		}
@@ -53,6 +54,7 @@ export const useAuthStore = create((set, get) => ({
 			get().disconnectSocket();
 		} catch (error) {
 			console.error("[LogOut] Error logging out user: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data)
 		}
 	},
@@ -68,6 +70,7 @@ export const useAuthStore = create((set, get) => ({
 			get().connectSocket();
 		} catch (error) {
 			console.error("[login] Error logging in user: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data)
 		} finally {
 			set({ loginLoading: false });
@@ -102,6 +105,7 @@ export const useAuthStore = create((set, get) => ({
 			toast.success('Profile updated successfully')
 		} catch (error) {
 			console.error("[updateProfile] Error updating profile: ", error);
+			// @ts-expect-error error type
 			toast.error(error.response.data)
 		} finally {
 			set({ updateProfileLoading: false });

@@ -1,13 +1,7 @@
 import React from "react";
 import EmojiPicker from "emoji-picker-react";
 import { Smile } from "lucide-react";
-
-interface EmojiInputProps {
-  text: string;
-  setText: (text: string) => void;
-  openEmoji: boolean;
-  setOpenEmoji: (openEmoji: boolean) => void;
-}
+import { EmojiInputProps } from "../types/types";
 
 const EmojiInput: React.FC<EmojiInputProps> = ({
   text,

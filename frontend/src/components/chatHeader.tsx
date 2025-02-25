@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
@@ -7,7 +7,7 @@ const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
 
-  React.useEffect(() => {
+  useEffect(() => {
     /**
      * Handles the Escape key by setting the selected user to null
      * @param {KeyboardEvent} event - The keyboard event
@@ -32,17 +32,17 @@ const ChatHeader = () => {
           <div className="avatar">
             <div className="size-10 rounded-full relative">
               <img
-                src={selectedUser.profilePic || "/avatar.png"}
-                alt={selectedUser.fullName}
+                src={selectedUser?.profilePic || "/avatar.png"}
+                alt={selectedUser?.name}
               />
             </div>
           </div>
 
           {/* User info */}
           <div>
-            <h3 className="font-medium">{selectedUser.name}</h3>
+            <h3 className="font-medium">{selectedUser?.name}</h3>
             <p className="text-sm text-base-content/70">
-              {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+              {selectedUser && onlineUsers.includes(selectedUser?._id) ? "Online" : "Offline"}
             </p>
           </div>
         </div>

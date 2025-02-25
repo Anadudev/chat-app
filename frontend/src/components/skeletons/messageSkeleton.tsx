@@ -1,4 +1,3 @@
-import React from "react";
 
 const MessageSkeleton = () => {
   const skeletonMessages = new Array(5).fill(0);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./chatHeader";
 import MessageInput from "./messageInput";
@@ -21,7 +21,7 @@ const ChatContainer = () => {
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    getMessages(selectedUser._id);
+    if (selectedUser) getMessages(selectedUser?._id);
     subscribeToMessages();
     return () => {
       unsubscribeFromMessages();
@@ -50,7 +50,7 @@ const ChatContainer = () => {
           <div
             key={message._id}
             className={`chat ${
-              message.senderId === authUser._id ? "chat-end" : "chat-start"
+              message.senderId === authUser?._id ? "chat-end" : "chat-start"
             }`}
             ref={messageEndRef}
           >
@@ -58,9 +58,9 @@ const ChatContainer = () => {
               <div className="size-10 rounded-full border">
                 <img
                   src={
-                    message.senderId === authUser._id
-                      ? authUser.profilePic || "/avatar.png"
-                      : selectedUser.profilePic || "/avatar.png"
+                    message.senderId === authUser?._id
+                      ? authUser?.profilePic || "/avatar.png"
+                      : selectedUser?.profilePic || "/avatar.png"
                   }
                   alt="profile avatar"
                 />

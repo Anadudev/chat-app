@@ -19,7 +19,7 @@ const MessageInput = () => {
       reader.onload = async () => {
         const base64Image = reader.result;
         setImagePreview(base64Image as string);
-        await sendMessage({ profilePic: base64Image });
+        await sendMessage({ image: base64Image });
       };
     }
     toast.error("No image selected");
@@ -48,7 +48,7 @@ const MessageInput = () => {
     }
   };
 
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className="p-4 w-full">
@@ -75,7 +75,12 @@ const MessageInput = () => {
         onSubmit={handleSendMessage}
         className="flex items-center gap-2"
       >
-          <EmojiInput text={text} setText={setText} openEmoji={openEmoji} setOpenEmoji={setOpenEmoji} />
+        <EmojiInput
+          text={text}
+          setText={setText}
+          openEmoji={openEmoji}
+          setOpenEmoji={setOpenEmoji}
+        />
         <div className="flex-1 flex gap-2">
           <input
             type="text"
@@ -102,7 +107,9 @@ const MessageInput = () => {
             className={`hidden sm:flex btn btn-circle ${
               imagePreview ? "text-emerald-500" : "text-zinc-400"
             }`}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() =>
+              (fileInputRef.current as HTMLInputElement | null)?.click()
+            }
           >
             <Image size={20} />
           </button>
