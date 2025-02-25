@@ -13,10 +13,12 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const socket_1 = require("./lib/socket");
+const path_1 = __importDefault(require("path"));
 // Load environment variables from .env file
 dotenv_1.default.config();
 // const app: Express = express();
 const PORT = process.env.PORT || 5001;
+const resolvedPath = path_1.default.resolve();
 // Parse incoming requests with JSON payloads
 socket_1.app.use(express_1.default.json());
 // Increase the limit to 50mb (adjust as needed)
@@ -42,6 +44,14 @@ socket_1.app.use("/api/messages", message_route_1.default);
 socket_1.app.use("*", (req, res) => {
     res.status(404).send("Route not found");
 });
+if (process.env.NODE_ENV === "production") {
+    // Serve the built frontend files
+    socket_1.app.use(express_1.default.static(path_1.default.join(resolvedPath, "../frontend/dist")));
+    // Serve the frontend index.html file for all routes
+    socket_1.app.get("*", (req, res) => {
+        res.sendFile(path_1.default.join(resolvedPath, "../frontend", "dist", "index.html"));
+    });
+}
 socket_1.server.listen(PORT, () => {
     console.log(`[server] Server is running at http://localhost:${PORT}`);
     // Connect to MongoDB database
