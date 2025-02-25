@@ -16,7 +16,7 @@ interface AuthDetails {
 
 const seedUsers: AuthDetails[] = Array.from({ length: 20 }).map(() => ({
 	email: faker.internet.email(),
-	name: faker.name.findName(),
+	name: faker.person.firstName(),
 	password: faker.internet.password(),
 	profilePic: faker.image.avatar(),
 }));

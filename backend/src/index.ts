@@ -9,11 +9,16 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { app, server } from "./lib/socket";
+
+import path from "path";
+
 // Load environment variables from .env file
 dotenv.config();
 
 // const app: Express = express();
 const PORT = process.env.PORT || 5001;
+
+const __dirname = path.resolve();
 
 // Parse incoming requests with JSON payloads
 app.use(express.json());
@@ -49,6 +54,17 @@ app.use("/api/messages", messageRoutes);
 app.use("*", (req: Request, res: Response) => {
 	res.status(404).send("Route not found");
 });
+
+if (process.env.NODE_ENV === "production") {
+	// Serve the built frontend files
+	app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+	// Serve the frontend index.html file for all routes
+	app.get("*", (req: Request, res: Response) => {
+		res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+	}
+	);
+}
 
 server.listen(PORT, () => {
 	console.log(`[server] Server is running at http://localhost:${PORT}`);
