@@ -1,0 +1,16 @@
+# Use root/example as user/password credentials
+# for easy database setup. In production replace
+# these with more secure credentials in a .env file.
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo-chat-app
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
