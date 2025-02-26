@@ -3,3 +3,4 @@
 .env
 backend/src/data
 data/
+**/dist
