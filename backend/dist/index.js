@@ -1,59 +1,54 @@
-"use strict";
 // src/index.ts
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const auth_route_1 = __importDefault(require("./routes/auth.route"));
-const message_route_1 = __importDefault(require("./routes/message.route"));
-const db_1 = require("./lib/db");
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const cors_1 = __importDefault(require("cors"));
-const body_parser_1 = __importDefault(require("body-parser"));
-const socket_1 = require("./lib/socket");
-const path_1 = __importDefault(require("path"));
+import express from "express";
+import dotenv from "dotenv";
+import authRoutes from "./routes/auth.route";
+import messageRoutes from "./routes/message.route";
+import { connectDB } from "./lib/db";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import bodyParser from "body-parser";
+import { app, server } from "./lib/socket";
+import path from "path";
+const __dirname = path.resolve();
 // Load environment variables from .env file
-dotenv_1.default.config();
+dotenv.config();
 // const app: Express = express();
 const PORT = process.env.PORT || 5001;
-const resolvedPath = path_1.default.resolve();
 // Parse incoming requests with JSON payloads
-socket_1.app.use(express_1.default.json());
+app.use(express.json());
 // Increase the limit to 50mb (adjust as needed)
 // to handle PayloadTooLargeError: request entity too large
-socket_1.app.use(body_parser_1.default.json({ limit: '50mb' }));
-socket_1.app.use(body_parser_1.default.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Parse incoming requests with JSON payloads
-socket_1.app.use(express_1.default.json({ limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
 // Enable cookie parsing
 // We will use this to store the JWT token in the cookie
-socket_1.app.use((0, cookie_parser_1.default)());
+app.use(cookieParser());
 // Enable CORS
-socket_1.app.use((0, cors_1.default)({
+app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
 // Define a route for the root path
-socket_1.app.get("/", (req, res) => {
+app.get("/", (req, res) => {
     res.send("Express + Typescript Server");
 });
-socket_1.app.use("/api/auth", auth_route_1.default);
-socket_1.app.use("/api/messages", message_route_1.default);
-socket_1.app.use("*", (req, res) => {
-    res.status(404).send("Route not found");
-});
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
+// app.use("*", (req: Request, res: Response) => {
+// 	res.status(404).send("Route not found");
+// });
 if (process.env.NODE_ENV === "production") {
     // Serve the built frontend files
-    socket_1.app.use(express_1.default.static(path_1.default.join(resolvedPath, "../frontend/dist")));
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
     // Serve the frontend index.html file for all routes
-    socket_1.app.get("*", (req, res) => {
-        res.sendFile(path_1.default.join(resolvedPath, "../frontend", "dist", "index.html"));
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
     });
 }
-socket_1.server.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`[server] Server is running at http://localhost:${PORT}`);
     // Connect to MongoDB database
-    (0, db_1.connectDB)();
+    connectDB();
 });

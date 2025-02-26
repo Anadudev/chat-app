@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,15 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkAuth = exports.updateProfile = exports.logout = exports.login = exports.signup = void 0;
-const user_model_1 = __importDefault(require("../models/user.model"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const utils_1 = require("../lib/utils");
-const cloudinary_1 = __importDefault(require("../lib/cloudinary"));
+import User from "../models/user.model";
+import bycrypt from "bcryptjs";
+import { generateJWTToken, validateEmail } from "../lib/utils";
+import cloudinary from "../lib/cloudinary";
 /**
  * Signup user endpoint
  *
@@ -28,7 +22,7 @@ const cloudinary_1 = __importDefault(require("../lib/cloudinary"));
  *
  * @returns {Promise<void>} - A promise that resolves when the user has been created
  */
-const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // signup logic
         const { name, email, password } = req.body;
@@ -42,19 +36,19 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 return res.status(400).send("User password is required");
             case password.length < 6:
                 return res.status(400).send("Password must be at least 6 characters");
-            case !(0, utils_1.validateEmail)(email):
+            case !validateEmail(email):
                 return res.status(400).send("Invalid email format");
         }
         // check if user with email already exists
-        const user = yield user_model_1.default.findOne({ email });
+        const user = yield User.findOne({ email });
         if (user) {
             return res.status(400).send("User with this email already exists");
         }
         // hash users password
-        const salt = yield bcryptjs_1.default.genSalt(10);
-        const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
+        const salt = yield bycrypt.genSalt(10);
+        const hashedPassword = yield bycrypt.hash(password, salt);
         // create new user
-        const newUser = new user_model_1.default({
+        const newUser = new User({
             name,
             email,
             password: hashedPassword,
@@ -62,7 +56,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!newUser) {
             return res.status(400).send("Invalid user data");
         }
-        (0, utils_1.generateJWTToken)(newUser._id.toString(), res);
+        generateJWTToken(newUser._id.toString(), res);
         // save user
         yield newUser.save();
         res.status(200).json({
@@ -79,7 +73,6 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send("Internal server error");
     }
 });
-exports.signup = signup;
 /**
  * Logs a user in and generates a JWT token
  *
@@ -88,7 +81,7 @@ exports.signup = signup;
  *
  * @returns {Promise<void>} - A promise that resolves when the user has been logged in and the JWT token has been set
  */
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         // validate user inputs
@@ -97,20 +90,20 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 return res.status(400).send("User email is required");
             case !password:
                 return res.status(400).send("User password is required");
-            case !(0, utils_1.validateEmail)(email):
+            case !validateEmail(email):
                 return res.status(400).send("Invalid email format");
         }
         // check if user with email already exists
-        const user = yield user_model_1.default.findOne({ email });
+        const user = yield User.findOne({ email });
         if (!user) {
             return res.status(400).send("invalid credentials");
         }
         // check if password is correct
-        const isMatch = yield bcryptjs_1.default.compare(password, user.password);
+        const isMatch = yield bycrypt.compare(password, user.password);
         if (!true) {
             return res.status(400).send("Invalid credentials");
         }
-        (0, utils_1.generateJWTToken)(user._id.toString(), res);
+        generateJWTToken(user._id.toString(), res);
         res.status(200).json({
             message: "User logged in successfully",
             user
@@ -121,7 +114,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send("Internal server error");
     }
 });
-exports.login = login;
 /**
  * Logs a user out by clearing the JWT cookie.
  *
@@ -130,7 +122,7 @@ exports.login = login;
  *
  * @returns {Promise<void>} - A promise that resolves when the user has been logged out
  */
-const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.clearCookie("jwt");
         res.status(200).json({ message: "User logged out successfully" });
@@ -140,7 +132,6 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send("Internal server error");
     }
 });
-exports.logout = logout;
 /**
  * Updates a user's profile with the given profile picture.
  *
@@ -151,7 +142,7 @@ exports.logout = logout;
  *
  * @throws {Error} - If there is an error updating the user profile
  */
-const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // update profile logic
         const { profilePic } = req.body;
@@ -161,13 +152,13 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return res.status(400).send("Profile picture is required");
         }
         //  upload users profile picture to cloudinary
-        const cloudinaryResponse = yield cloudinary_1.default.uploader.upload(profilePic);
+        const cloudinaryResponse = yield cloudinary.uploader.upload(profilePic);
         if (!cloudinaryResponse) {
             console.error("[updateProfile] Error uploading profile picture: ", cloudinaryResponse);
             return res.status(400).send("Error uploading profile picture");
         }
         // update user profile
-        const user = yield user_model_1.default.findByIdAndUpdate(userId, { profilePic: cloudinaryResponse.secure_url }, { new: true }).select("-password");
+        const user = yield User.findByIdAndUpdate(userId, { profilePic: cloudinaryResponse.secure_url }, { new: true }).select("-password");
         res.status(200).json({
             message: "User profile updated successfully",
             user
@@ -178,7 +169,6 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).send("Internal server error");
     }
 });
-exports.updateProfile = updateProfile;
 /**
  * Checks if the user is authenticated.
  *
@@ -189,7 +179,7 @@ exports.updateProfile = updateProfile;
  *
  * @throws {Error} - If there is an error checking user authentication
  */
-const checkAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const checkAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.status(200).json({
             message: "User is authenticated",
@@ -201,4 +191,3 @@ const checkAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send("Internal server error");
     }
 });
-exports.checkAuth = checkAuth;

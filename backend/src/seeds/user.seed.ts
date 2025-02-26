@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 import { connectDB } from "../lib/db";
 import User from "../models/user.model";
-// Todo: install faker package
 import { faker } from '@faker-js/faker';
 
 config();
