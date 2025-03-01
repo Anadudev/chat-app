@@ -44,9 +44,9 @@ app.use(cors({
 // Define a route for the root path
 
 
-app.get("/", (req: Request, res: Response) => {
-	res.send("Express + Typescript Server");
-});
+// app.get("/", (req: Request, res: Response) => {
+// 	res.send("Express + Typescript Server");
+// });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
