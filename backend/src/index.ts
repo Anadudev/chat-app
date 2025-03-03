@@ -18,7 +18,7 @@ const __dirname = path.resolve();
 dotenv.config();
 
 // const app: Express = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 // Parse incoming requests with JSON payloads
 app.use(express.json());
